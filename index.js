@@ -5,7 +5,7 @@ const opn = require('opn');
 const fs = require('fs');
 
 async function run() {
-    const browser = await puppeteer.launch();
+    const browser = await puppeteer.launch({args: ['--no-sandbox', '--disable-setuid-sandbox']});
     const page = await browser.newPage();
     const USERNAME_SELECTOR = '#username';
     const PASSWORD_SELECTOR = '#password';
@@ -31,7 +31,7 @@ async function run() {
 
     var dashboardName = process.argv[5];
     await page.click(ANALYTICS_SEARCH_BOX_SELECTOR);
-    await page.keyboard.type(dashboardName);
+    await page.keyboard.type(process.argv[3]);
     console.log('Looking for Dashboard :'+dashboardName);
     await page.waitFor(5 * 1000);
     await page.screenshot({ path: 'screenshots/after_search.png' , fullPage: true});
