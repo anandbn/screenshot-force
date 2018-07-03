@@ -12,12 +12,12 @@ async function run() {
     const BUTTON_SELECTOR = '#Login';
     const APP_ICON_SELECTOR = '#oneHeader > div.bBottom > div > div.slds-context-bar__primary.navLeft > div.slds-context-bar__item.slds-context-bar_dropdown-trigger.slds-dropdown-trigger.slds-dropdown-trigger--click.slds-no-hover > nav > button';
     const ALL_APPS_SELECTOR = "ul#sortable";
-    await page.goto('https://login.salesforce.com?startURL=/analytics/wave/wave.apexp#home');
+    await page.goto(process.argv[2]+'?startURL=/analytics/wave/wave.apexp#home');
     await page.click(USERNAME_SELECTOR);
-    await page.keyboard.type(process.argv[2]);
+    await page.keyboard.type(process.argv[3]);
 
     await page.click(PASSWORD_SELECTOR);
-    await page.keyboard.type(process.argv[3]);
+    await page.keyboard.type(process.argv[4]);
 
     await page.click(BUTTON_SELECTOR);
     console.log('Login button clicked');
@@ -27,7 +27,7 @@ async function run() {
     console.log('after waiting for 5 seconds');
     await page.screenshot({ path: 'screenshots/salesforce_after_login.png' , fullPage: true});
 
-    var dashboardName = process.argv[4];
+    var dashboardName = process.argv[5];
     console.log('Looking for Dashboard :'+dashboardName);
     await page.click('[data-tooltip="'+dashboardName+'"]');
     await page.waitForNavigation({waitUntil: 'networkidle2'});
@@ -48,7 +48,7 @@ async function run() {
 
 
 if(process.argv.length == 2){
-    console.error('Need to specify a Dashboard name');
+    console.error('Parameters: <login url> <username> <password> <dashboard name>');
     process.exit(-1);
 }else{
     run();

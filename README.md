@@ -17,8 +17,7 @@ npm install
 Once build is complete, run the following command to get a screenshot of the wave dashboard
 
 ```
-node index.js <username> <password> <dashboard labe>
+node index.js <login url> <username> <password> <dashboard label>
 
 ```
 
-__Note:__ This is currently only supporting production endpoint but the code is easy to follow for sandbox environments.
