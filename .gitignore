@@ -1,0 +1,6 @@
+.sfdx
+.vscode
+credentials.js
+screenshots/*
+package-lock.json
+node_modules
