@@ -10,6 +10,7 @@ async function run() {
     const USERNAME_SELECTOR = '#username';
     const PASSWORD_SELECTOR = '#password';
     const BUTTON_SELECTOR = '#Login';
+    const ANALYTICS_SEARCH_BOX_SELECTOR = '.lensearch';
     const APP_ICON_SELECTOR = '#oneHeader > div.bBottom > div > div.slds-context-bar__primary.navLeft > div.slds-context-bar__item.slds-context-bar_dropdown-trigger.slds-dropdown-trigger.slds-dropdown-trigger--click.slds-no-hover > nav > button';
     const ALL_APPS_SELECTOR = "ul#sortable";
     await page.goto(process.argv[2]+'?startURL=/analytics/wave/wave.apexp#home');
@@ -27,16 +28,22 @@ async function run() {
     console.log('after waiting for 5 seconds');
     await page.screenshot({ path: 'screenshots/salesforce_after_login.png' , fullPage: true});
 
+
     var dashboardName = process.argv[5];
+    await page.click(ANALYTICS_SEARCH_BOX_SELECTOR);
+    await page.keyboard.type(dashboardName);
     console.log('Looking for Dashboard :'+dashboardName);
+    await page.waitFor(5 * 1000);
+    await page.screenshot({ path: 'screenshots/after_search.png' , fullPage: true});
     await page.click('[data-tooltip="'+dashboardName+'"]');
     await page.waitForNavigation({waitUntil: 'networkidle2'});
-    console.log('after '+dashboardName);
+    console.log('Found '+dashboardName);
     await page.setViewport({width: 1200, height: 1200});
     await page.waitFor(5 * 1000);
 
     await page.screenshot({ path: 'screenshots/temp.png' , fullPage: true});
     Jimp.read('screenshots/temp.png').then(function(theImage){
+        console.log('Cropping header for screenshot.. ');
         theImage.crop(0,150,1200,(1200-150))
                 .write("screenshots/"+dashboardName+".png");
     });
