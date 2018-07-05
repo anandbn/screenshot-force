@@ -112,9 +112,7 @@ async function getScreenshot(subscribeEvent) {
         .then(function (theImage) {
             console.log('Cropping header for screenshot.. ');
             theImage.crop(0, 150, 1200, (1200 - 150))
-                .write('/tmp/'+dashboardName + '.png');
-            console.log('>>> /tmp/'+dashboardName + '.png written ...');
-            console.log('>>> PNG File exists : '+ fs.existsSync('/tmp/'+dashboardName + '.png'));
+                .write('/tmp/temp.png');
             var theDoc = nforce.createSObject('Document', {
                 Name: dashboardName + '.png',
                 FolderId: '00546000000yoxQ',
@@ -123,12 +121,12 @@ async function getScreenshot(subscribeEvent) {
                 Description: dashboardName + '.png',
                 attachment: {
                     fileName: dashboardName + '.png',
-                    body: fs.readFileSync('/tmp/'+dashboardName + '.png')
+                    body: fs.readFileSync('/tmp/temp.png')
                 }
             });
             org.insert({ sobject: theDoc })
                 .then(function(){
-
+                    console.log('Document created successfully :' + theDoc._fields.id);
                 })
                 .error(function (err) {
                     console.error('Document creation failed !!!!');
