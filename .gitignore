@@ -1,6 +1,6 @@
 .sfdx
 .vscode
-credentials.js
+credentials.txt
 screenshots/*
 package-lock.json
 node_modules
