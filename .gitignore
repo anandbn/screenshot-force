@@ -6,3 +6,4 @@ package-lock.json
 node_modules
 .env
 _tmp
+.DS_Store
