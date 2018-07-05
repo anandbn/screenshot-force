@@ -4,3 +4,5 @@ credentials.js
 screenshots/*
 package-lock.json
 node_modules
+.env
+_tmp
