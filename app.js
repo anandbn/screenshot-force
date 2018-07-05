@@ -88,7 +88,7 @@ async function getScreenshot(subscribeEvent) {
     await page.keyboard.type(SF_USER_NAME);
 
     await page.click(PASSWORD_SELECTOR);
-    await page.keyboard.type(SF_USER_PASSWORD);
+    await page.keyboard.type(SF_USER_PASSWORD+SF_SECURITY_TOKEN);
 
     await page.click(BUTTON_SELECTOR);
     console.log('Login button clicked');
