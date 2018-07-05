@@ -17,10 +17,6 @@ bayeux.on('disconnect', function (clientId) {
     console.log('Bayeux server disconnect');
 });
 
-if (!fs.existsSync('_tmp')) {
-    fs.mkdir('_tmp');
-    console.log('created _tmp directory for screenshots');
-}
 server.listen(PORT, () => console.log(`Express server listening on ${PORT}`));
 
 // Connect to Salesforce
@@ -96,26 +92,29 @@ async function getScreenshot(subscribeEvent) {
     console.log('after navigation complete');
     await page.waitFor(6 * 1000);
     console.log('after waiting for 5 seconds');
-    await page.screenshot({ path: path.join('_tmp', 'salesforce_after_login.png'), fullPage: true });
+    await page.screenshot({ path:'/tmp/salesforce_after_login.png', fullPage: true });
 
 
     await page.click(ANALYTICS_SEARCH_BOX_SELECTOR);
     await page.keyboard.type(dashboardName);
     console.log('Looking for Dashboard :' + dashboardName);
     await page.waitFor(5 * 1000);
-    await page.screenshot({ path: path.join('_tmp', 'after_search.png'), fullPage: true });
+    await page.screenshot({ path:'/tmp/after_search.png', fullPage: true });
     await page.click('[data-tooltip="' + dashboardName + '"]');
     await page.waitForNavigation({ waitUntil: 'networkidle2' });
     console.log('Found ' + dashboardName);
     await page.setViewport({ width: 1200, height: 1200 });
     await page.waitFor(5 * 1000);
 
-    await page.screenshot({ path: path.join('_tmp', 'temp.png'), fullPage: true });
-    Jimp.read(path.join('_tmp', 'temp.png'))
+    await page.screenshot({ path: '/tmp/temp.png', fullPage: true });
+    console.log('>>>'+ '/tmp/temp.png written ...');
+    Jimp.read('/tmp/temp.png')
         .then(function (theImage) {
             console.log('Cropping header for screenshot.. ');
             theImage.crop(0, 150, 1200, (1200 - 150))
-                .write(path.join('_tmp', dashboardName + '.png'));
+                .write('/tmp/'+dashboardName + '.png');
+            console.log('>>> /tmp/'+dashboardName + '.png written ...');
+            console.log('>>> PNG File exists : '+ fs.existsSync('/tmp/'+dashboardName + '.png'));
             var theDoc = nforce.createSObject('Document', {
                 Name: dashboardName + '.png',
                 FolderId: '00546000000yoxQ',
@@ -124,7 +123,7 @@ async function getScreenshot(subscribeEvent) {
                 Description: dashboardName + '.png',
                 attachment: {
                     fileName: dashboardName + '.png',
-                    body: fs.readFileSync(path.join('_tmp', dashboardName + '.png'))
+                    body: fs.readFileSync('/tmp/'+dashboardName + '.png')
                 }
             });
             org.insert({ sobject: theDoc })
@@ -135,7 +134,7 @@ async function getScreenshot(subscribeEvent) {
                     console.error('Document creation failed !!!!');
                     console.error(err);
                 });
-            fs.unlinkSync(path.join('_tmp', 'temp.png'));
+            fs.unlinkSync(path.join('/tmp', 'temp.png'));
         });
     browser.close();
 }
