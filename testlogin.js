@@ -3,6 +3,7 @@ const nforce = require('nforce');
 const path = require('path');
 const puppeteer = require('puppeteer');
 const fs = require('fs');
+const url = require('url');
 
 // Connect to Salesforce
 let SF_CLIENT_ID = process.env.SF_CLIENT_ID;
@@ -11,13 +12,15 @@ let SF_USER_NAME = process.env.SF_USER_NAME;
 let SF_USER_PASSWORD = process.env.SF_USER_PASSWORD;
 let SF_SECURITY_TOKEN = process.env.SF_SECURITY_TOKEN;
 let SF_ENDPOINT_URL = process.env.SF_ENDPOINT_URL;
-/*
+
+
+
+
 console.log('SF_CLIENT_ID:' + SF_CLIENT_ID);
 console.log('SF_CLIENT_SECRET:' + SF_CLIENT_SECRET);
 console.log('SF_USER_NAME:' + SF_USER_NAME);
 console.log('SF_USER_PASSWORD:' + SF_USER_PASSWORD);
 console.log('SF_SECURITY_TOKEN:' + SF_SECURITY_TOKEN);
-*/
 
 let org = nforce.createConnection({
     clientId: SF_CLIENT_ID,
@@ -46,8 +49,7 @@ async function loginToSalesforce(){
 }
 
 async function testLoginViaPupeteer(){
-    let proxyUrl = process.env.PROXIMO_URL;
-    
+
     await loginToSalesforce();
     if (!fs.existsSync('_tmp')) {
         fs.mkdir('_tmp');
@@ -55,9 +57,6 @@ async function testLoginViaPupeteer(){
     }
     
     var browserArgs = ['--no-sandbox', '--disable-setuid-sandbox'];
-    if(proxyUrl){
-        browserArgs.push(`--proxy-server=${proxyUrl}`)
-    }
     console.log('Headless Browser Arguments:'+ browserArgs);
     const browser = await puppeteer.launch({
         headless: true,
@@ -67,7 +66,6 @@ async function testLoginViaPupeteer(){
     const USERNAME_SELECTOR = '#username';
     const PASSWORD_SELECTOR = '#password';
     const BUTTON_SELECTOR = '#Login';
-    const ANALYTICS_SEARCH_BOX_SELECTOR = '.lensearch';
 
  
     await page.goto(SF_ENDPOINT_URL + '?startURL=/analytics/wave/wave.apexp#home');
