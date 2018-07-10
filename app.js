@@ -1,4 +1,5 @@
 'use strict';
+require('dotenv').load();
 const puppeteer = require('puppeteer');
 const faye = require('faye');
 const nforce = require('nforce');
@@ -113,6 +114,7 @@ async function getScreenshot(subscribeEvent) {
             console.log('Cropping header for screenshot.. ');
             theImage.crop(0, 150, 1200, (1200 - 150))
                 .write('/tmp/temp.png');
+            var theEvent;
             var theDoc = nforce.createSObject('Document', {
                 Name: dashboardName + '.png',
                 FolderId: '00546000000yoxQ',
@@ -127,6 +129,13 @@ async function getScreenshot(subscribeEvent) {
             org.insert({ sobject: theDoc })
                 .then(function(){
                     console.log('Document created successfully :' + theDoc._fields.id);
+                    theEvent = nforce.createSObject('thesaasguy__Send_Email_Dashboard__e');
+                    theEvent.set('thesaasguy__Document_Id__c', theDoc._fields.id);
+                    return org.insert({sobject: theEvent});
+
+                }).then(function(){
+                    console.log('Event sent successfully :' + theEvent._fields.id);
+
                 })
                 .error(function (err) {
                     console.error('Document creation failed !!!!');
