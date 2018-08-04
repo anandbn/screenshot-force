@@ -142,6 +142,7 @@ async function getScreenshot(subscribeEvent) {
                     console.error(err);
                 });
             fs.unlinkSync(path.join('/tmp', 'temp.png'));
+            console.log('Removed tmp.png file');
         });
     browser.close();
 }
