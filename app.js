@@ -69,6 +69,7 @@ let subscribeToPlatformEvents = () => {
 
 async function getScreenshot(subscribeEvent) {
     let dashboardName = subscribeEvent.payload.thesaasguy__Dashboard_Name__c;
+    let createdById = subscribeEvent.payload.CreatedById;
 
     const browser = await puppeteer.launch({
         headless: true,
@@ -131,6 +132,8 @@ async function getScreenshot(subscribeEvent) {
                     console.log('Document created successfully :' + theDoc._fields.id);
                     theEvent = nforce.createSObject('thesaasguy__Send_Email_Dashboard__e');
                     theEvent.set('thesaasguy__Document_Id__c', theDoc._fields.id);
+                    theEvent.set('thesaasguy__Recipient_User_Id__c',createdById)
+                    console.log(`Setting thesaasguy__Recipient_User_Id__c to ${createdById}`)
                     return org.insert({sobject: theEvent});
 
                 }).then(function(){
