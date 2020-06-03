@@ -11,7 +11,7 @@ const express = require('express');
 let app = express();
 let server = require('http').Server(app);
 let PORT = process.env.PORT || 3000;
-
+/*
 let bayeux = new faye.NodeAdapter({ mount: '/faye', timeout: 45 });
 bayeux.attach(server);
 bayeux.on('disconnect', function (clientId) {
@@ -149,6 +149,30 @@ async function getScreenshot(subscribeEvent) {
         });
     browser.close();
 }
+*/
+
+async function run(){
+    try {
+        const theImage = await Jimp.read('./tmp/dashboard.png');
+        let imgCrop = await theImage.crop(0, 150, 1200, (1200 - 150));
+        await imgCrop.write('./tmp/dashboard_cropped.png');
+
+    }catch(err){
+        console.error(JSON.stringify(err,null,4));
+    }
+}
+
+async function simplePromise(){
+    return new Promise(function(resolve,reject){
+        resolve('Hello');
+    })
+}
+async function runMain(){
+    await run();
+    let n = await simplePromise();
+    console.log(`After cropping write to new file ${n}`);
+}
+runMain();
 
 
 
