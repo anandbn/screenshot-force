@@ -1,0 +1,6 @@
+<design:component label="Default Filter">
+  <design:attribute name="filter" label="Filter" description="The initial filter"/>
+  <design:attribute name="dashboardId" 
+     label="Dashboard ID"
+     description="ID of the Analytics Dashboard to send the filter to"/>
+</design:component>

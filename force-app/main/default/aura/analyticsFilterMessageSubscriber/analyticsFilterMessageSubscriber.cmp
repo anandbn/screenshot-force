@@ -1,0 +1,9 @@
+<aura:component implements="force:appHostable,flexipage:availableForAllPageTypes,forceCommunity:availableForAllPageTypes,force:lightningQuickAction" access="global">
+    <aura:attribute name="developerName" type="String" access="GLOBAL" default="XXXXXXXXXXX" />
+
+    <aura:registerEvent name="update" type="wave:update" />
+    <aura:handler event="wave:selectionChanged" action="{!c.handleSelectionChanged}" />
+
+    <lightning:messageChannel type="thesaasguy__AnalyticsFilterChannel__c" aura:id="myAnalyticsFilter" onMessage="{!c.handleFilterMessage}" scope="APPLICATION"/>
+
+</aura:component>

@@ -1,0 +1,5 @@
+<design:component>
+    <design:attribute name="developerName" label="Dashboard Name"
+        description="The Analytics Dashboard to send the filter to" />
+
+</design:component>

@@ -1,0 +1,35 @@
+<aura:component implements="flexipage:availableForAllPageTypes" access="global" >
+    <!-- EMP API component -->
+    <lightning:empApi aura:id="empApi" />
+
+    <!-- Calls the onInit controller function on component initalization -->
+    <aura:handler name="init" value="{!this}" action="{!c.onInit}"/>
+
+    <!-- Holds the streaming event subscription -->
+    <aura:attribute name="subscription" type="Map" />
+
+    <aura:attribute name="messages" type="String[]" />
+    <aura:attribute name="messageGroups" type="Object[]" />
+
+    <!-- Form for subscribing/unsubscribing to/from events -->
+    <!--
+    <lightning:input aura:id="channel" label="channel" name="channel" type="text" value="/event/thesaasguy__Message__e"/>
+    <lightning:button label="Subscribe" onclick="{! c.subscribe }" />
+    <lightning:button label="Unsubscribe" onclick="{! c.unsubscribe }" disabled="{!empty(v.subscription)}"/><br/>
+    -->
+    <lightning:card title="Screenshot Logs" iconName="custom:custom19">
+        <lightning:accordion aura:id="accordion">
+
+            <aura:iteration items="{!v.messageGroups}" var="grp">
+                <lightning:accordionSection name="{!grp.group}" label="{!grp.group}">
+                    <ul>
+                        <aura:iteration items="{!grp.messages}" var="msg">
+                            <li>{!msg}</li>
+                        </aura:iteration>
+                    </ul>
+                </lightning:accordionSection>
+            </aura:iteration>
+        </lightning:accordion>        
+    </lightning:card>
+
+</aura:component>

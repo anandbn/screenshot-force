@@ -1,0 +1,11 @@
+.THIS.container {
+  border: 1px solid #A0A0A0;
+  padding: 5px;
+  width: 100%;
+  margin: 5px auto;
+}
+      
+.THIS .uiInputText {
+  display: inline-block;
+  margin-right: 5px;
+}

@@ -1,0 +1,4 @@
+<design:component label="Fire Wave Event">
+  <design:attribute name="filter" label="Filter" description="The filter to apply."/>
+  <design:attribute name="dashboardId" label="Dashboard ID" description="ID of the Wave Dashboard to send the filter to."/>
+</design:component>

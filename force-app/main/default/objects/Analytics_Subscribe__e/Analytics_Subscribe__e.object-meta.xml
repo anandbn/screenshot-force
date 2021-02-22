@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <deploymentStatus>Deployed</deploymentStatus>
+    <description>A an event that allows the end user to subscribe to a specific dashboard to have emails sent to them.</description>
+    <eventType>StandardVolume</eventType>
+    <label>Analytics Subscribe</label>
+    <pluralLabel>Analytics Subscribe</pluralLabel>
+    <publishBehavior>PublishImmediately</publishBehavior>
+</CustomObject>

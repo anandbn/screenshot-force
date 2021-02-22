@@ -1,0 +1,11 @@
+<aura:component implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes,force:lightningQuickAction" access="global">
+    <aura:attribute name="dashboards" type="Object[]"/>
+    <aura:attribute name="columns" type="Object[]"/>
+    <c:LC_API aura:id="restClient"/>
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}"/>
+    <lightning:datatable keyField="id"
+                         data="{!v.dashboards}"
+                         columns="{!v.columns}"
+                         hideCheckboxColumn="true"
+                         onrowaction="{! c.handleRowAction }"/>
+</aura:component>

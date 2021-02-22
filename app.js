@@ -11,7 +11,7 @@ const express = require('express');
 let app = express();
 let server = require('http').Server(app);
 let PORT = process.env.PORT || 3000;
-/*
+
 let bayeux = new faye.NodeAdapter({ mount: '/faye', timeout: 45 });
 bayeux.attach(server);
 bayeux.on('disconnect', function (clientId) {
@@ -149,7 +149,7 @@ async function getScreenshot(subscribeEvent) {
         });
     browser.close();
 }
-*/
+
 
 async function run(){
     try {

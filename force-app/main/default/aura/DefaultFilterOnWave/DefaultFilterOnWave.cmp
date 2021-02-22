@@ -1,0 +1,10 @@
+<aura:component implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes,force:lightningQuickAction" access="global" >
+    <aura:attribute name="filter" type="String" access="GLOBAL"/>
+    <aura:attribute name="dashboardId" type="String" access="GLOBAL" default="0FK46000000QYe5GAG"/>
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}"/>
+    <aura:registerEvent name="update" type="wave:update"/>
+    <div class="container">
+        <ui:inputText value="{!v.filter}" label="Filter: " size="100"></ui:inputText>
+        <ui:button press="{!c.handleSendFilter}" label="Fire"/>
+    </div>
+</aura:component>
