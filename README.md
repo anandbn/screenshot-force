@@ -1,92 +1,18 @@
-### Prerequisites
+# Salesforce DX Project: Next Steps
 
-- NodeJS
-- NPM
-- Pupeteer Buildpack
+Now that you’ve created a Salesforce DX project, what’s next? Here are some documentation resources to get you started.
 
-### Building 
+## How Do You Plan to Deploy Your Changes?
 
-Download git repo and follow the below commands
+Do you want to deploy a set of changes, or create a self-contained application? Choose a [development model](https://developer.salesforce.com/tools/vscode/en/user-guide/development-models).
 
-```
-npm install
+## Configure Your Salesforce DX Project
 
-```
+The `sfdx-project.json` file contains useful configuration information for your project. See [Salesforce DX Project Configuration](https://developer.salesforce.com/docs/atlas.en-us.sfdx_dev.meta/sfdx_dev/sfdx_dev_ws_config.htm) in the _Salesforce DX Developer Guide_ for details about this file.
 
-### Add the pupeteer build pack
+## Read All About It
 
-Add the pupeteer build pack to the NodeJS build pack so that pupeteer gets bundled with the slug that gets built.
-
-```
-heroku buildpacks:add https://github.com/jontewks/puppeteer-heroku-buildpack
-```
-
-### Heroku Environment variables
-
-Create a Connected app with OAuth enabled and plug in the below config variables.
-
-```
-SF_CLIENT_ID:      
-SF_CLIENT_SECRET:  
-SF_ENDPOINT_URL:   https://login.salesforce.com
-```
-Currently this app runs using 1 user that you configure with the below config variables
-
-```
-SF_SECURITY_TOKEN: 
-SF_USER_NAME:      
-SF_USER_PASSWORD:  
-```
-
-### Platform event to request an emailed screenshot
-
-Currently uses two platform events:
-1. `Analytics_Subscribe__e` : Used to listen for a request to kick off the process of screeshot for a specific dashboard.
-2. `Send_Email_Dashboard__e` : Used to notify the platform that the screnshot process is complete and has been uploaded into the `Documents` in salesforce. There is a trigger that will trigger the email to the end user that oroginally requested the email. Below you'll see a sample of that trigger on the platform event.
-
-```
-trigger EmailSubscriptionDashboardTrigger on Send_Email_Dashboard__e (after insert) {
-    Send_Email_Dashboard__e theEvent = Trigger.new[0];
-    System.debug('>>>>>>> Trigger.new :'+Trigger.new[0]);
-    SendSubscriptionEmail.sendEmail(theEvent.Document_Id__c);
-}
-
-```
-
-__SendSubscriptionEmail.cls__
-
-```
-public class SendSubscriptionEmail {
-    private static String templateId='<setup an email template>';
-    public static void sendEmail(String docId){
-        Messaging.SingleEmailMessage mail = new Messaging.SingleEmailMessage();
-        mail.setOrgWideEmailAddressId('<your org wide default email>');
-        mail.setTemplateId(templateId);
-        mail.optOutPolicy = 'FILTER';
-        mail.setWhatId(docId);
-        mail.setSaveAsActivity(false);
-        User usr = [select Id from User where Id=<user you want to send this email to>];
-        mail.setTargetObjectId(usr.Id);
-        Messaging.SendEmailResult[] results =  Messaging.sendEmail(new Messaging.Email[] { mail } , true);
-        if (results[0].success) {
-            System.debug('The email was sent successfully.');
-        } else {
-            System.debug('The email failed to send: ' + results[0].errors[0].message);
-        } 
-    }
-    
-    
-}
-
-```
-
-Make sure you update that part of the code 
-### Running 
-
-Once build is complete, run the following command to get a screenshot of the wave dashboard
-
-```
-node app.js
-
-```
-
+- [Salesforce Extensions Documentation](https://developer.salesforce.com/tools/vscode/)
+- [Salesforce CLI Setup Guide](https://developer.salesforce.com/docs/atlas.en-us.sfdx_setup.meta/sfdx_setup/sfdx_setup_intro.htm)
+- [Salesforce DX Developer Guide](https://developer.salesforce.com/docs/atlas.en-us.sfdx_dev.meta/sfdx_dev/sfdx_dev_intro.htm)
+- [Salesforce CLI Command Reference](https://developer.salesforce.com/docs/atlas.en-us.sfdx_cli_reference.meta/sfdx_cli_reference/cli_reference.htm)

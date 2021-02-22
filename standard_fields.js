@@ -1,6 +1,8 @@
 'use strict';
 require('dotenv').load();
 const puppeteer = require('puppeteer');
+const path = require('path');
+const fs = require('fs');
 const ALL_OBJECTS = [
     'Account',
     'AccountTeamMember',
@@ -159,10 +161,79 @@ async function getStandardFields(browser, objName) {
     return fieldNames;
 }
 
+async function filteredDashboard(browser,repName){
+    const page = await browser.newPage();
+
+    page.on('console', msg => console.log('PAGE LOG:', msg.text()));
+    
+    const filteredDashboardPage = `/lightning/n/thesaasguy__Filtered_Dashboards#salesRep=${repName}`;
+    let urlToGo = `https://anandwavedev-dev-ed.my.salesforce.com/secur/frontdoor.jsp?sid=00D46000000qFQG!ARMAQJhqPrbcfgJmieJUCMDJsMfL.ZBFQ3xdamccMBihaX5aKFs2E423fd4d4Q1QAiuPhhioQ4NoewHlMqCbZ33.I3PkmGt5&retURL=${encodeURIComponent(filteredDashboardPage)}`; 
+    console.log(`Navigating to URL : ${urlToGo}`);
+    await page.setViewport({ width: 1200, height: 1200 });
+    await page.goto(urlToGo);
+
+    await page.waitForNavigation();
+    console.log(`After waitForNavigation`);
+    await page.waitFor(20 * 1000);
+    
+    
+    console.log(`After navigating to filtered dashboardboard`);
+    await page.screenshot({ path: `./tmp/homePage.png`, fullPage: true });
+    console.log(`After screenshot of homepage`);
+
+    for (const frame of page.mainFrame().childFrames()) {
+        if (frame.url().includes('wave.app')) {
+            console.log('Found wave Frame.....');
+            const openInWaveBtns = await frame.$$('div.action.open-in-wave-btn')
+            const openInWaveBtn = openInWaveBtns[0];
+            openInWaveBtn.click();
+            console.log('Clicking into filtered Dashboard...waiting for 30 seconds');
+            await page.waitFor(30 * 1000);
+            // get all the currently open pages as an array
+            let pages = await browser.pages();
+            console.log(`2: pages.length = ${pages.length}`);
+            for (const thePage of pages) {
+                console.log(`2:page.url = ${thePage.url()}`);
+                if (thePage.url().includes('wave.app')) {
+                    console.log('2:Found wave browser tab');
+                    console.log('2:set viewport to 1200 x 1200..waiting for 10 secs...');
+                    await thePage.setViewport({ width: 1200, height: 1200 });
+                    await thePage.waitFor(10 * 1000);
+                    let fileName = `./tmp/filtered_db_${repName}.png`;
+                    await thePage.screenshot({ path: fileName, fullPage: true });
+                    console.log('2:Done screenshotting...');
+                    const theImage = await Jimp.read(fileName);
+                    let imgCrop = await theImage.crop(0, 150, 1200, (1200 - 150));
+                    console.log(`Cropping header for screenshot to ${fileName}`);
+                    await imgCrop.write(fileName, async function () {
+                        console.log(`After cropping image and writing to ${fileName}`);
+                        await uploadImageAndSendEvent(payload, accountName, userInfo, fileName);
+                        fs.unlinkSync(fileName);
+                    })
+                }
+            }
+        }
+    }
+    browser.close();
+}
+
+async function waitForCustomElement(page){
+    console.log('inside waitForCustomElement');
+        
+    await page.evaluate(
+        async () => {
+            console.log('inside evaluate');
+            const elemList = document.querySelector("#brandBand_1 > div > div.center.oneCenterStage.lafSinglePaneWindowManager > div > div > div > div > div > div > div.grouping.grouping2 > div.column.column2 > div > thesaasguy-filter-my-dashboard > input");
+            //const asArrayList = Array.from(elemList);
+            console.log(elemList).length;
+            console.log('2:inside evaluate');
+        }
+    );
+}
 async function run() {
     const browser = await initializeBrowser();
-    let allFieldsAndObjects = new Array();
-    /*for (let k = 0; k < ALL_OBJECTS.length; k++) {
+    /*let allFieldsAndObjects = new Array();
+    for (let k = 0; k < ALL_OBJECTS.length; k++) {
         console.log(`Processing Object ${ALL_OBJECTS[k]} ...`);
         let theFields = await getStandardFields(browser, ALL_OBJECTS[k]);
         allFieldsAndObjects.push({
@@ -174,7 +245,8 @@ async function run() {
     }
     console.log(JSON.stringify(allFieldsAndObjects, '\n', 4));
     */
-    let res = await getStandardFields(browser, 'Opportunity');
+    //let res = await getStandardFields(browser, 'Opportunity');
+    await filteredDashboard(browser);
     browser.close();
 }
 
