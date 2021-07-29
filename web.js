@@ -273,9 +273,9 @@ async function filteredDashboardByRep(payload, userInfo, repName){
         await logAndSendEvent(repName, payload, `After screenshot of homepage`);
     
         for (const frame of page.mainFrame().childFrames()) {
-            if (frame.url().includes('wave.app')) {
+            if (frame.url().includes('analytics/dashboard')) {
                 await logAndSendEvent(repName, payload, 'Found wave Frame.....');
-                const openInWaveBtns = await frame.$$('div.action.open-in-wave-btn')
+                const openInWaveBtns = await frame.$x('//button[@class="slds-button slds-button_icon-border action-bar-action-openInNewWindow reportAction report-action-openInNewWindow"]');
                 const openInWaveBtn = openInWaveBtns[0];
                 openInWaveBtn.click();
                 await logAndSendEvent(repName, payload, 'Clicking into filtered Dashboard...waiting for 30 seconds');
@@ -285,7 +285,7 @@ async function filteredDashboardByRep(payload, userInfo, repName){
                 console.log(`2: pages.length = ${pages.length}`);
                 for (const thePage of pages) {
                     console.log(`2:page.url = ${thePage.url()}`);
-                    if (thePage.url().includes('wave.app')) {
+                    if (thePage.url().includes('analytics/dashboard')) {
                         await logAndSendEvent(repName, payload, 'Found wave browser tab');
                         await logAndSendEvent(repName, payload, 'set viewport to 1200 x 1200..waiting for 10 secs...');
                         await thePage.setViewport({ width: 1200, height: 1200 });
